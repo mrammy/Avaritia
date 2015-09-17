@@ -127,6 +127,9 @@ public class ItemArmorInfinity extends ItemArmor implements ICosmicRenderItem, I
         return model;
     }
 
+    private static final AttributeModifier knockbackModifier = (new AttributeModifier( "knockbackResistance", 0.25D, 0)).setSaved(false);
+
+
     @SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
     public Multimap getAttributeModifiers(ItemStack stack)
@@ -134,6 +137,14 @@ public class ItemArmorInfinity extends ItemArmor implements ICosmicRenderItem, I
         Multimap multimap = super.getAttributeModifiers(stack);
         //if(armorType == 3)
         //    multimap.put(SharedMonsterAttributes.movementSpeed.getAttributeUnlocalizedName(), new AttributeModifier(field_111210_e, "Armor modifier", 0.7, 1));
+        if (armorType == 0)
+            multimap.put(SharedMonsterAttributes.knockbackResistance.getAttributeUnlocalizedName(), knockbackModifier);
+        if (armorType == 1)
+            multimap.put(SharedMonsterAttributes.knockbackResistance.getAttributeUnlocalizedName(), knockbackModifier);
+        if (armorType == 2)
+            multimap.put(SharedMonsterAttributes.knockbackResistance.getAttributeUnlocalizedName(), knockbackModifier);
+        if (armorType == 3)
+            multimap.put(SharedMonsterAttributes.knockbackResistance.getAttributeUnlocalizedName(), knockbackModifier);
         return multimap;
     }
 
@@ -160,19 +171,39 @@ public class ItemArmorInfinity extends ItemArmor implements ICosmicRenderItem, I
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) {
+    public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) {
         if(Compat.thaumic)
             list.add(EnumChatFormatting.DARK_PURPLE + StatCollector.translateToLocal("tc.visdiscount") + ": " + this.getVisDiscount(stack, player, (Aspect)null) + "%");
         if(Compat.botan) {
-            if (hasPhantomInk(stack))
-                list.add(StatCollector.translateToLocal("botaniamisc.hasPhantomInk").replaceAll("&", "\u00a7"));
+            if(GuiScreen.isShiftKeyDown()) {
+                addStringToTooltip(getArmorSetTitle(player), list);
+                addArmorSetDescription(stack, list);
+                ItemStack[] stacks = getArmorSetStacks();
+                for(int i = 0; i < stacks.length; i++)
+                    addStringToTooltip((hasArmorSetItem(player, i) ? EnumChatFormatting.GREEN : "") + " - " + stacks[i].getDisplayName(), list);
+                if(hasPhantomInk(stack))
+                    addStringToTooltip(StatCollector.translateToLocal("botaniamisc.hasPhantomInk"), list);
+            } else addStringToTooltip(StatCollector.translateToLocal("botaniamisc.shiftinfo"), list);
         }
         if (this.slot == 3) {
-        	list.add("");
-        	list.add(EnumChatFormatting.BLUE+"+"+EnumChatFormatting.ITALIC+LudicrousText.makeSANIC("SANIC")+EnumChatFormatting.RESET+""+EnumChatFormatting.BLUE+"% Speed");
+            list.add("");
+            list.add(EnumChatFormatting.BLUE+"+"+EnumChatFormatting.ITALIC+LudicrousText.makeSANIC("SANIC")+EnumChatFormatting.RESET+""+EnumChatFormatting.BLUE+"% Speed");
         }
         super.addInformation(stack, player, list, par4);
     }
+
+    @Optional.Method(modid = "Botania")
+    @Override
+    public float getDiscount(ItemStack stack, int slot, EntityPlayer player) {
+        return LudicrousItems.isInfinite(player) ? 0.25F : 0F;
+    }
+
+    @Optional.Method(modid = "Botania")
+    @Override
+    public boolean shouldGiveProficiency(ItemStack stack, int slot, EntityPlayer player) {
+        return LudicrousItems.isInfinite(player);
+    }
+
 
     public boolean hasPhantomInk(ItemStack stack) {
         if(stack.getTagCompound() == null)
@@ -190,17 +221,23 @@ public class ItemArmorInfinity extends ItemArmor implements ICosmicRenderItem, I
         tag.setBoolean("phantomInk", ink);
     }
 
-    @Optional.Method(modid = "Botania")
-    @Override
-    public float getDiscount(ItemStack stack, int slot, EntityPlayer player){
-        return 0.25F;
+    public String getArmorSetTitle(EntityPlayer player) {
+        return StatCollector.translateToLocal("botaniamisc.armorset") + " " + getArmorSetName() + " (" + getSetPiecesEquipped(player) + "/" + getArmorSetStacks().length + ")";
     }
 
-    @Optional.Method(modid = "Botania")
-    @Override
-    public boolean shouldGiveProficiency(ItemStack itemStack, int i, EntityPlayer player){
-        return true;
+    public String getArmorSetName() {
+        return StatCollector.translateToLocal("avaritia.armorset.infinity.name");
     }
+
+    public void addArmorSetDescription(ItemStack stack, List<String> list) {
+        addStringToTooltip(StatCollector.translateToLocal("avaritia.armorset.infinity.desc0"), list);
+        addStringToTooltip(StatCollector.translateToLocal("avaritia.armorset.infinity.desc1"), list);
+    }
+
+    public void addStringToTooltip(String s, List<String> tooltip) {
+        tooltip.add(s.replaceAll("&", "\u00a7"));
+    }
+
 
     @SideOnly(Side.CLIENT)
     @Override
