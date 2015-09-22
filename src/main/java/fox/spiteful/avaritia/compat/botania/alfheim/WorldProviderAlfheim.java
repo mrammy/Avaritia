@@ -3,8 +3,9 @@ package fox.spiteful.avaritia.compat.botania.alfheim;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import fox.spiteful.avaritia.FieldHelper;
-import fox.spiteful.avaritia.Lumberjack;
+import fox.spiteful.avaritia.Config;
+import fox.spiteful.avaritia.helpers.FieldHelper;
+import fox.spiteful.avaritia.helpers.SideHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.Timer;
@@ -14,9 +15,13 @@ import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.biome.WorldChunkManagerHell;
 import net.minecraft.world.chunk.IChunkProvider;
 
+import org.apache.logging.log4j.Level;
+
+
 public class WorldProviderAlfheim extends WorldProvider {
 
-	public static int dimensionID = 13;
+
+	public static int dimensionID = Config.alfheimID;
 	
 	@Override
 	public void registerWorldChunkManager()
@@ -24,7 +29,7 @@ public class WorldProviderAlfheim extends WorldProvider {
         this.worldChunkMgr = new WorldChunkManagerHell(BiomeGenBase.hell, 0.0F);
         this.isHellWorld = true;
         this.hasNoSky = false;
-        if(FMLCommonHandler.instance().getSide().isClient()) {
+        if(SideHelper.isClientSide()) {
             this.setCloudRenderer(new ApocalypseCloudRenderer());
             this.setSkyRenderer(new ApocalypseSkyRenderer());
         }

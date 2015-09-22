@@ -1,5 +1,6 @@
 package fox.spiteful.avaritia.compat.botania.alfheim;
 
+import fox.spiteful.avaritia.helpers.SideHelper;
 import net.minecraft.world.gen.structure.MapGenStructureIO;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
@@ -9,7 +10,7 @@ public class Alfheim {
 	public static void vacationTime() {
 		AlfheimBlocks.alfheimify();
 
-        if(FMLCommonHandler.instance().getSide().isClient()) {
+        if(SideHelper.isClientSide()) {
             AlfheimEvents alfevents = new AlfheimEvents();
             FMLCommonHandler.instance().bus().register(alfevents);
             MinecraftForge.EVENT_BUS.register(alfevents);

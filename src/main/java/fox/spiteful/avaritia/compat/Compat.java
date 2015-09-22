@@ -1,6 +1,7 @@
 package fox.spiteful.avaritia.compat;
 
 import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.registry.GameRegistry;
 import fox.spiteful.avaritia.Config;
 import fox.spiteful.avaritia.Lumberjack;
@@ -10,6 +11,7 @@ import fox.spiteful.avaritia.compat.botania.Tsundere;
 import fox.spiteful.avaritia.compat.forestry.Ranger;
 import fox.spiteful.avaritia.compat.modtweaker.Tweak;
 import fox.spiteful.avaritia.compat.nei.NotEnough;
+import fox.spiteful.avaritia.compat.torcherino.Torcherino;
 import fox.spiteful.avaritia.compat.thaumcraft.Lucrum;
 import fox.spiteful.avaritia.compat.ticon.Tonkers;
 import fox.spiteful.avaritia.crafting.ExtremeCraftingManager;
@@ -116,6 +118,8 @@ public class Compat {
                     Item extracell = getItem("extracells", "storage.component");
                     //16mb cell
                     Grinder.catalyst.getInput().add(new ItemStack(extracell, 1, 3));
+                    //4mb fluid cell
+                    Grinder.catalyst.getInput().add(new ItemStack(extracell, 1, 10));
                 }
                 else {
                     //64k Cell
@@ -288,7 +292,16 @@ public class Compat {
             }
         }
 
-        if(Loader.isModLoaded("magicalcrops") && Config.magicrops){
+        if(Loader.isModLoaded("magicalcrops") && modVersion("magicalcrops").contains("4.0.0") && Config.magicrops){
+            try {
+                Block essenceStorageBlock = getBlock("magicalcrops", "essence_storage");
+                ItemStack massZivicioBlock = new ItemStack(essenceStorageBlock, 1, 5);
+                Grinder.catalyst.getInput().add(massZivicioBlock);
+            }
+            catch (Throwable e){
+                Lumberjack.log(Level.INFO, e, "Avaritia expects magical crops 4 to come out of beta at the end of time.");
+            }
+        } else if(Loader.isModLoaded("magicalcrops") && !modVersion("magicalcrops").contains("4.0.0") && Config.magicrops){
             try {
                 Item essence = getItem("magicalcrops", "magicalcrops_MagicEssence");
                 Item meat = getItem("magicalcrops", "magicalcrops_RawMeat");
@@ -415,6 +428,15 @@ public class Compat {
             }
         }
 
+        if(Loader.isModLoaded("Torcherino") && Config.torcherino){
+            try {
+                Torcherino.lightItUp();
+            }
+            catch (Throwable e){
+                Lumberjack.log(Level.INFO, e, "In soviet Avaritia mod thinks you are too slow.");
+            }
+        }
+
         if(Loader.isModLoaded("RotaryCraft") && Config.rotisserie){
             try {
                 Item stuff = getItem("RotaryCraft", "rotarycraft_item_compacts");
@@ -439,6 +461,22 @@ public class Compat {
         if(target == null)
             throw new ItemNotFoundException(mod, item);
         return target;
+    }
+
+    public static String modVersion(String modId) {
+        return getModContainer(modId).getVersion();
+    }
+
+    public static ModContainer getModContainer(String modId)
+    {
+        for (ModContainer mod : Loader.instance().getActiveModList())
+        {
+            if (mod.getModId().equalsIgnoreCase(modId))
+            {
+                return mod;
+            }
+        }
+        return null;
     }
 
     public static class ItemNotFoundException extends Exception {

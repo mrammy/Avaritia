@@ -11,9 +11,12 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import fox.spiteful.avaritia.PotionHelper;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
@@ -39,6 +42,7 @@ import thaumcraft.api.nodes.IRevealer;
 import vazkii.botania.api.item.IManaProficiencyArmor;
 import vazkii.botania.api.item.IPhantomInkable;
 import vazkii.botania.api.mana.IManaDiscountArmor;
+import WayofTime.alchemicalWizardry.api.items.interfaces.ILPGauge;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -50,7 +54,8 @@ import java.util.List;
         @Optional.Interface(iface = "thaumcraft.api.IVisDiscountGear", modid = "Thaumcraft"),
         @Optional.Interface(iface = "vazkii.botania.api.item.IPhantomInkable", modid = "Botania"),
         @Optional.Interface(iface = "vazkii.botania.api.mana.IManaDiscountArmor", modid = "Botania"),
-        @Optional.Interface(iface = "vazkii.botania.api.item.IManaProficiencyArmor", modid = "Botania")
+        @Optional.Interface(iface = "vazkii.botania.api.item.IManaProficiencyArmor", modid = "Botania"),
+        @Optional.Interface(iface = "WayofTime.alchemicalWizardry.api.items.interfaces.ILPGauge", modid = "BloodMagic")
 })
 public class ItemArmorInfinity extends ItemArmor implements ICosmicRenderItem, IGoggles, IRevealer, IVisDiscountGear, IPhantomInkable,
         IManaDiscountArmor, IManaProficiencyArmor {
@@ -58,6 +63,7 @@ public class ItemArmorInfinity extends ItemArmor implements ICosmicRenderItem, I
     public static final ArmorMaterial infinite_armor = EnumHelper.addArmorMaterial("infinity", 9999, new int[]{6, 16, 12, 6}, 1000);
     public IIcon cosmicMask;
     public final int slot;
+    static ItemStack[] infinityset;
 
     public ItemArmorInfinity(int slot){
         super(infinite_armor, 0, slot);
@@ -164,11 +170,46 @@ public class ItemArmorInfinity extends ItemArmor implements ICosmicRenderItem, I
         return false;
     }
 
+    @Optional.Method(modid = "BloodMagic")
+    boolean canSeeLPBar(ItemStack itemStack) {
+        if (armorType == 0)
+            return true;
+        return false;
+    }
+
     @Optional.Method(modid = "Thaumcraft")
     @Override
     public int getVisDiscount(ItemStack itemStack, EntityPlayer entityPlayer, Aspect aspect){
         return 20;
     }
+
+    public ItemStack[] getArmorSetStacks() {
+        if(infinityset == null)
+            infinityset = new ItemStack[] {
+                new ItemStack(LudicrousItems.infinity_armor),
+                new ItemStack(LudicrousItems.infinity_helm),
+                new ItemStack(LudicrousItems.infinity_pants),
+                new ItemStack(LudicrousItems.infinity_shoes)
+        };
+
+        return infinityset;
+    }
+
+    public boolean hasArmorSetItem(EntityPlayer player, int i) {
+        ItemStack stack = player.inventory.armorInventory[3 - i];
+        if(stack == null)
+            return false;
+
+        switch(i) {
+            case 0: return stack.getItem() == LudicrousItems.infinity_helm;
+            case 1: return stack.getItem() == LudicrousItems.infinity_armor;
+            case 2: return stack.getItem() == LudicrousItems.infinity_pants;
+            case 3: return stack.getItem() == LudicrousItems.infinity_shoes;
+        }
+
+        return false;
+    }
+
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) {
@@ -219,6 +260,15 @@ public class ItemArmorInfinity extends ItemArmor implements ICosmicRenderItem, I
             stack.setTagCompound(tag);
         }
         tag.setBoolean("phantomInk", ink);
+    }
+
+    public int getSetPiecesEquipped(EntityPlayer player) {
+        int pieces = 0;
+        for(int i = 0; i < 4; i++)
+            if(hasArmorSetItem(player, i))
+                pieces++;
+
+        return pieces;
     }
 
     public String getArmorSetTitle(EntityPlayer player) {

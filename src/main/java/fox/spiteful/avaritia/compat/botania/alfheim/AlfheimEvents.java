@@ -17,7 +17,7 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.Phase;
 import cpw.mods.fml.relauncher.ReflectionHelper;
-import fox.spiteful.avaritia.FieldHelper;
+import fox.spiteful.avaritia.helpers.FieldHelper;
 import fox.spiteful.avaritia.Lumberjack;
 
 public class AlfheimEvents {

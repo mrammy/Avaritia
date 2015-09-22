@@ -37,6 +37,7 @@ public class Config {
     public static boolean extracells = true;
     public static boolean witch = true;
     public static boolean rotisserie = true;
+    public static boolean torcherino = false;
 
     public static boolean alfheim = false;
 
@@ -49,6 +50,8 @@ public class Config {
 
     public static int modifier = 0;
     public static int multiplier = 0;
+
+    public static int alfheimID = 13;
 
     public static void configurate(File file){
         Configuration conf = new Configuration(file);
@@ -87,8 +90,12 @@ public class Config {
             extracells = conf.get("compatibility", "Extra Cells", true).getBoolean(true);
             witch = conf.get("compatibility", "Witchery", true).getBoolean(true);
             rotisserie = conf.get("compatibility", "Rotarycraft", true).getBoolean(true);
+            torcherino = conf.get("compatibility", "Torcherino", false, "Enable to turn Torcherino mode on, because your awesome and can handle it.").getBoolean(false);
 
             alfheim = conf.get("compatibility", "Alfheim", false).getBoolean(false);
+
+            conf.addCustomCategoryComment("dimensions", "Change these only if your having a conflict with another mod");
+            alfheimID = conf.get("dimensions", "AlfhiemID", 13).getInt(13);
 
             conf.addCustomCategoryComment("materials", "Disable to stop using that material in recipes. Useful if a mod adds unobtainable placeholder ores.");
             copper = conf.get("materials", "Copper", true).getBoolean(true);

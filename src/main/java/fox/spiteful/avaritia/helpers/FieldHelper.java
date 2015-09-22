@@ -1,5 +1,6 @@
-package fox.spiteful.avaritia;
+package fox.spiteful.avaritia.helpers;
 
+import fox.spiteful.avaritia.Lumberjack;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 

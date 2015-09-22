@@ -1,6 +1,8 @@
 package fox.spiteful.avaritia.compat.nei;
 
 import codechicken.nei.api.API;
+import fox.spiteful.avaritia.gui.GUICompressor;
+import fox.spiteful.avaritia.helpers.SideHelper;
 import net.minecraft.item.ItemStack;
 
 public class NotEnough {
@@ -18,6 +20,7 @@ public class NotEnough {
     }
 
     public static void hide(ItemStack stack){
-        API.hideItem(stack);
+        if (SideHelper.isClientSide())
+            API.hideItem(stack);
     }
 }
