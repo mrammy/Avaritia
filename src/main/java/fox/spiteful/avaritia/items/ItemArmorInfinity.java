@@ -61,11 +61,11 @@ import java.util.List;
         @Optional.Interface(iface = "vazkii.botania.api.item.IPhantomInkable", modid = "Botania"),
         @Optional.Interface(iface = "vazkii.botania.api.mana.IManaDiscountArmor", modid = "Botania"),
         @Optional.Interface(iface = "vazkii.botania.api.item.IManaProficiencyArmor", modid = "Botania"),
-        /*@Optional.Interface(iface = "WayofTime.alchemicalWizardry.api.alchemy.energy.IAlchemyGogglese", modid = "BloodMagic"),*/
+        @Optional.Interface(iface = "WayofTime.alchemicalWizardry.api.alchemy.energy.IAlchemyGoggles", modid = "BloodMagic"),
         @Optional.Interface(iface = "WayofTime.alchemicalWizardry.api.items.interfaces.ILPGauge", modid = "BloodMagic")
 })
 public class ItemArmorInfinity extends ItemArmor implements ICosmicRenderItem, IGoggles, IRevealer, IVisDiscountGear, IRunicArmor, IWarpingGear, IPhantomInkable,
-        IManaDiscountArmor, IManaProficiencyArmor, ILPGauge/*, IAlchemyGoggles* {
+        IManaDiscountArmor, IManaProficiencyArmor, ILPGauge, IAlchemyGoggles {
 
     public static final ArmorMaterial infinite_armor = EnumHelper.addArmorMaterial("infinity", 9999, new int[]{6, 16, 12, 6}, 1000);
     public IIcon cosmicMask;
@@ -214,7 +214,7 @@ public class ItemArmorInfinity extends ItemArmor implements ICosmicRenderItem, I
         }
     }
 
-    /*@Optional.Method(modid = "BloodMagic")
+    @Optional.Method(modid = "BloodMagic")
     @Override
     public boolean showIngameHUD(World world, ItemStack stack, EntityPlayer player) {
         if (armorType == 0) {
@@ -222,7 +222,7 @@ public class ItemArmorInfinity extends ItemArmor implements ICosmicRenderItem, I
         } else {
             return false;
         }
-    }*/
+    }
 
     @Optional.Method(modid = "Thaumcraft")
     @Override
@@ -498,7 +498,7 @@ public class ItemArmorInfinity extends ItemArmor implements ICosmicRenderItem, I
 					if (hasFoot) {
 						boolean flying = player.capabilities.isFlying;
 						boolean swimming = player.isInsideOfMaterial(Material.water) || player.isInWater();
-						if (player.onGround || flying/* || swimming*/) {
+						if (player.onGround || flying || swimming) {
 							boolean sneaking = player.isSneaking();
 							
 							float speed = 0.15f 
