@@ -1,7 +1,6 @@
 package fox.spiteful.avaritia;
 
 import net.minecraftforge.common.config.Configuration;
-import org.apache.logging.log4j.Level;
 
 import java.io.File;
 
@@ -109,7 +108,8 @@ public class Config {
             multiplier = conf.get("balance!", "Cost Multiplier", 0, "Added to the existing multiplier to make prices more expensive or cheaper. Can be negative.").getInt(0);
         }
         catch(Exception e){
-            Lumberjack.log(Level.ERROR, e, "Avaritia couldn't find its config!");
+            Lumberjack.error("Avaritia couldn't find its config!");
+            Lumberjack.debug(e);
         }
         finally {
             conf.save();

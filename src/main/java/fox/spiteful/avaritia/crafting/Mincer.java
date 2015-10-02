@@ -13,7 +13,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
-import org.apache.logging.log4j.Level;
 
 public class Mincer {
     public static ShapelessOreRecipe stewRecipe;
@@ -210,7 +209,8 @@ public class Mincer {
                 knownMeats.add(new ItemStack(stuff, 1, 8));
             }
             catch(Exception e){
-                Lumberjack.log(Level.INFO, e, "Avaritia got sick of the arcane guardian's healspam.");
+                Lumberjack.info("Avaritia got sick of the arcane guardian's healspam.");
+                Lumberjack.debug(e);
                 Compat.am2 = false;
             }
         }

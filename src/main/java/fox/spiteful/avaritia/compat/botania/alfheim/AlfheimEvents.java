@@ -41,7 +41,7 @@ public class AlfheimEvents {
 			bossColorModifierPrevField = ReflectionHelper.findField(EntityRenderer.class, "bossColorModifierPrev", "field_82832_V");
 			//getNightVisionBrightnessMethod = ReflectionHelper.findMethod(EntityRenderer.class, Minecraft.getMinecraft().entityRenderer, new String[]{"getNightVisionBrightness", "func_82830_a"}, Float.class);
 		} catch(Exception e) {
-			Lumberjack.log(Level.ERROR, e);
+			Lumberjack.error(e);
 		}
 	}
 	

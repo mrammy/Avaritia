@@ -12,7 +12,7 @@ public class FieldHelper {
 		try {
 			return (T) field.get(instance);
 		} catch(Exception e) {
-			Lumberjack.log(Level.ERROR, e);
+			Lumberjack.error(e);
 		}
 		return null;
 	}
@@ -21,7 +21,7 @@ public class FieldHelper {
 		try {
 			field.set(instance, value);
 		} catch(Exception e) {
-			Lumberjack.log(Level.ERROR, e);
+			Lumberjack.error(e);
 		}
 	}
 	
@@ -30,7 +30,7 @@ public class FieldHelper {
 		try {
 			return (T) method.invoke(instance, params);
 		} catch(Exception e) {
-			Lumberjack.log(Level.ERROR, e);
+			Lumberjack.error(e);
 		}
 		return null;
 	}

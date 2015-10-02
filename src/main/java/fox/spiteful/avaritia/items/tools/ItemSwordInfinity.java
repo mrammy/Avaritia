@@ -11,10 +11,14 @@ import fox.spiteful.avaritia.entity.EntityImmortalItem;
 import fox.spiteful.avaritia.items.LudicrousItems;
 import fox.spiteful.avaritia.render.ICosmicRenderItem;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 import net.minecraft.util.DamageSource;
@@ -25,6 +29,7 @@ import net.minecraftforge.common.util.EnumHelper;
 import org.apache.logging.log4j.Level;
 
 import java.lang.reflect.Field;
+import java.util.List;
 
 public class ItemSwordInfinity extends ItemSword implements ICosmicRenderItem {
 
@@ -39,7 +44,7 @@ public class ItemSwordInfinity extends ItemSword implements ICosmicRenderItem {
             stupidMojangProtectedVariable = ReflectionHelper.findField(EntityLivingBase.class, "recentlyHit", "field_70718_bc");
         }
         catch(Exception e){
-            Lumberjack.log(Level.ERROR, e);
+            Lumberjack.error(e);
         }
     }
 
@@ -48,6 +53,14 @@ public class ItemSwordInfinity extends ItemSword implements ICosmicRenderItem {
         setUnlocalizedName("infinity_sword");
         setTextureName("avaritia:infinity_sword");
         setCreativeTab(Avaritia.tab);
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public void getSubItems(Item item, CreativeTabs tab, List list) {
+        ItemStack pick = new ItemStack(this);
+        pick.addEnchantment(Enchantment.looting, 10);
+        list.add(pick);
     }
 
     @Override
@@ -68,7 +81,7 @@ public class ItemSwordInfinity extends ItemSword implements ICosmicRenderItem {
             stupidMojangProtectedVariable.setInt(victim, 60);
         }
         catch(Exception e){
-            Lumberjack.log(Level.ERROR, e, "The sword isn't reflecting right! Polish it!");
+            Lumberjack.error("The sword isn't reflecting right! Polish it!");
         }
         victim.func_110142_aN().func_94547_a(new DamageSourceInfinitySword(player), victim.getHealth(), victim.getHealth());
         victim.setHealth(0);

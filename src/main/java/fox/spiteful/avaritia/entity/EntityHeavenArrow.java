@@ -21,7 +21,7 @@ public class EntityHeavenArrow extends EntityArrow {
             ticksInGroundField = ReflectionHelper.findField(EntityArrow.class, "ticksInGround", "field_70252_j");
         }
         catch(Exception e){
-            Lumberjack.log(Level.ERROR, e);
+            Lumberjack.error(e);
         }
     }
 	

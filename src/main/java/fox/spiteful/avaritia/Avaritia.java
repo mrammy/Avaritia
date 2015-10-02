@@ -28,6 +28,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
+import org.apache.logging.log4j.Logger;
 
 @Mod(modid = "Avaritia", name = "Avaritia", dependencies = "after:Thaumcraft;after:AWWayofTime;after:Botania")
 public class Avaritia {
@@ -36,6 +37,8 @@ public class Avaritia {
 
     @SidedProxy(serverSide = "fox.spiteful.avaritia.CommonProxy", clientSide = "fox.spiteful.avaritia.ClientProxy")
     public static CommonProxy proxy;
+
+    public static Logger logger;
 
     public static CreativeTabs tab = new CreativeTabs("avaritia"){
         @Override
@@ -55,6 +58,7 @@ public class Avaritia {
     @EventHandler
     public void earlyGame(FMLPreInitializationEvent event){
         instance = this;
+        logger = Lumberjack.getLogger();
         Config.configurate(event.getSuggestedConfigurationFile());
         LudicrousItems.grind();
         LudicrousBlocks.voxelize();

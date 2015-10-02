@@ -2,6 +2,7 @@ package fox.spiteful.avaritia;
 
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import fox.spiteful.avaritia.Lumberjack;
 import fox.spiteful.avaritia.items.ItemArmorInfinity;
 import fox.spiteful.avaritia.items.ItemFracturedOre;
 import fox.spiteful.avaritia.items.ItemMatterCluster;
@@ -10,8 +11,12 @@ import fox.spiteful.avaritia.items.tools.*;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityCreature;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.EntitySkeleton;
+import net.minecraft.entity.monster.EntitySpider;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Blocks;
@@ -25,10 +30,12 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.FakePlayer;
+import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.entity.player.PlayerDropsEvent;
@@ -199,6 +206,7 @@ public class LudicrousEvents {
         if(!(event.entityLiving instanceof EntityPlayer))
             return;
         EntityPlayer player = (EntityPlayer)event.entityLiving;
+        Avaritia.logger.info("event source damageType is" + event.source.damageType);
         if(player.getHeldItem() != null && player.getHeldItem().getItem() == LudicrousItems.infinity_sword && player.isUsingItem())
             event.setCanceled(true);
         if(LudicrousItems.isInfinite(player) && !event.source.damageType.equals("infinity"))
@@ -247,52 +255,112 @@ public class LudicrousEvents {
             			addDrop(event, new ItemStack(Items.skull, 1, 1));
             		}
             	}
-                
+               
+                if(player.getHeldItem() != null && player.getHeldItem().getItem() == LudicrousItems.infinity_sword){
+                    // ok, we need to create a silly amount of drops
+                    // technically not looting because it doesnt multiply the chance and whatnot but meh
+                    for (int i = 0; i<event.drops.size(); i++) {
+                        int lootFactor = 10;
+                        EntityItem drop = event.drops.get(i);
+                        ItemStack stack = drop.getEntityItem();
+                        for (int d = 0; d < lootFactor; d++){
+                            addDrop(event, stack);
+                        }
+                    }
+                }
             }
         }
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void onPlayerDeath(PlayerDropsEvent evt) {
-        if(evt.entityPlayer == null || evt.entityPlayer instanceof FakePlayer) {
+    public void onPlayerDeathDrops(PlayerDropsEvent event) {
+        if(event.entityPlayer == null || event.entityPlayer instanceof FakePlayer) {
             return;
         }
-        if(evt.entityPlayer.worldObj.getGameRules().getGameRuleBooleanValue("keepInventory")) {
+        if(event.entityPlayer.worldObj.getGameRules().getGameRuleBooleanValue("keepInventory")) {
             return;
         }
 
-        ListIterator<EntityItem> iter = evt.drops.listIterator();
-        while (iter.hasNext()) {
-            EntityItem ei = iter.next();
-            ItemStack item = ei.getEntityItem();
+        ListIterator<EntityItem> iterator = event.drops.listIterator();
+        while (iterator.hasNext()) {
+            EntityItem entityItem = iterator.next();
+            ItemStack item = entityItem.getEntityItem();
             if(isInfiniteItem(item)) {
-                addToPlayerInventory(evt.entityPlayer, item);
-                iter.remove();
+                addToPlayerInventory(event.entityPlayer, item);
+                iterator.remove();
             }
         }
     }
 
     @SubscribeEvent
-    public void onPlayerClone(PlayerEvent.Clone evt) {
-        if(!evt.wasDeath) {
-            return;
-        }
-        if(evt.original == null || evt.entityPlayer == null || evt.entityPlayer instanceof FakePlayer) {
-            return;
-        }
-        if(evt.entityPlayer.worldObj.getGameRules().getGameRuleBooleanValue("keepInventory")) {
-            return;
-        }
-        for (int i = 0; i < evt.original.inventory.mainInventory.length; i++) {
-            ItemStack item = evt.original.inventory.mainInventory[i];
-            if(isInfiniteItem(item)) {
-                addToPlayerInventory(evt.entityPlayer, item);
+    public void onEntityTargetedEvent(LivingSetAttackTargetEvent event) {
+        doTargetingCheck(event);
+    }
+
+    @SubscribeEvent
+    public void onEntityLivingEvent(LivingEvent event) {
+        doTargetingCheck(event);
+    }
+    // these two methods should make you a ghost to mobs
+    private void doTargetingCheck(LivingEvent event) {
+        if (event.entity instanceof EntityLiving) {
+            EntityLiving entityLiving = ((EntityLiving) event.entity);
+            if (entityLiving.getAttackTarget() == null)
+                return;
+            if (!(entityLiving.getAttackTarget() instanceof EntityPlayer))
+                return;
+            EntityPlayer player = (EntityPlayer) entityLiving.getAttackTarget();
+            if (LudicrousItems.isInfinite(player)) {
+                Entity e = event.entity;
+                if (e instanceof EntityCreature) {
+                    ((EntityCreature) e).setAttackTarget(null);
+                    ((EntityCreature) e).setTarget(null);
+                    ((EntityCreature) e).setRevengeTarget(null);
+                }
             }
         }
-        for (int i = 0; i < evt.original.inventory.armorInventory.length; i++) {
-            ItemStack item = evt.original.inventory.armorInventory[i];
+    }
+    private void doTargetingCheck(LivingSetAttackTargetEvent event) {
+        if (event.target == null)
+            return;
+        if (!(event.target instanceof EntityPlayer))
+            return;
+        EntityPlayer player = (EntityPlayer) event.target;
+        if (LudicrousItems.isInfinite(player)) {
+            Entity e = event.entity;
+            if (e instanceof EntityCreature) {
+                ((EntityCreature) e).setAttackTarget(null);
+                ((EntityCreature) e).setTarget(null);
+                ((EntityCreature) e).setRevengeTarget(null);
+            } else if (e instanceof EntitySpider) {
+                ((EntitySpider) e).setAttackTarget(null);
+                ((EntitySpider) e).setTarget(null);
+                ((EntitySpider) e).setRevengeTarget(null);
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void onPlayerClone(PlayerEvent.Clone event) {
+        if(!event.wasDeath) {
+            return;
+        }
+        if(event.original == null || event.entityPlayer == null || event.entityPlayer instanceof FakePlayer) {
+            return;
+        }
+        if(event.entityPlayer.worldObj.getGameRules().getGameRuleBooleanValue("keepInventory")) {
+            return;
+        }
+        for (int i = 0; i < event.original.inventory.mainInventory.length; i++) {
+            ItemStack item = event.original.inventory.mainInventory[i];
             if(isInfiniteItem(item)) {
-                addToPlayerInventory(evt.entityPlayer, item);
+                addToPlayerInventory(event.entityPlayer, item);
+            }
+        }
+        for (int i = 0; i < event.original.inventory.armorInventory.length; i++) {
+            ItemStack item = event.original.inventory.armorInventory[i];
+            if(isInfiniteItem(item)) {
+                addToPlayerInventory(event.entityPlayer, item);
             }
         }
     }

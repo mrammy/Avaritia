@@ -83,7 +83,8 @@ public class CosmicRenderShenanigans {
 		try {
 			map = (int[]) mapfield.get(Minecraft.getMinecraft().entityRenderer);
 		} catch (Exception e) {
-			Lumberjack.log(Level.ERROR, e, "Failure to get light map");
+			Lumberjack.info("Failure to get light map");
+			Lumberjack.debug(e);
 		}
 		if (map == null) {
 			setLightLevel(1.0f);

@@ -12,6 +12,7 @@ import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import fox.spiteful.avaritia.PotionHelper;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.block.Block;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -25,23 +26,27 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
+import net.minecraft.util.MathHelper;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingJumpEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import thaumcraft.api.IGoggles;
+import thaumcraft.api.IRunicArmor;
 import thaumcraft.api.IVisDiscountGear;
+import thaumcraft.api.IWarpingGear;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.nodes.IRevealer;
 import vazkii.botania.api.item.IManaProficiencyArmor;
 import vazkii.botania.api.item.IPhantomInkable;
 import vazkii.botania.api.mana.IManaDiscountArmor;
+import WayofTime.alchemicalWizardry.api.alchemy.energy.IAlchemyGoggles;
 import WayofTime.alchemicalWizardry.api.items.interfaces.ILPGauge;
 
 import java.util.ArrayList;
@@ -50,15 +55,17 @@ import java.util.List;
 
 @Optional.InterfaceList({
         @Optional.Interface(iface = "thaumcraft.api.IGoggles", modid = "Thaumcraft"),
-        @Optional.Interface(iface = "thaumcraft.api.nodes.IRevealer", modid = "Thaumcraft"),
+        @Optional.Interface(iface = "thaumcraft.api.IRunicArmor", modid = "Thaumcraft"),
         @Optional.Interface(iface = "thaumcraft.api.IVisDiscountGear", modid = "Thaumcraft"),
+        @Optional.Interface(iface = "thaumcraft.api.nodes.IRevealer", modid = "Thaumcraft"),
         @Optional.Interface(iface = "vazkii.botania.api.item.IPhantomInkable", modid = "Botania"),
         @Optional.Interface(iface = "vazkii.botania.api.mana.IManaDiscountArmor", modid = "Botania"),
         @Optional.Interface(iface = "vazkii.botania.api.item.IManaProficiencyArmor", modid = "Botania"),
+        /*@Optional.Interface(iface = "WayofTime.alchemicalWizardry.api.alchemy.energy.IAlchemyGogglese", modid = "BloodMagic"),*/
         @Optional.Interface(iface = "WayofTime.alchemicalWizardry.api.items.interfaces.ILPGauge", modid = "BloodMagic")
 })
-public class ItemArmorInfinity extends ItemArmor implements ICosmicRenderItem, IGoggles, IRevealer, IVisDiscountGear, IPhantomInkable,
-        IManaDiscountArmor, IManaProficiencyArmor {
+public class ItemArmorInfinity extends ItemArmor implements ICosmicRenderItem, IGoggles, IRevealer, IVisDiscountGear, IRunicArmor, IWarpingGear, IPhantomInkable,
+        IManaDiscountArmor, IManaProficiencyArmor, ILPGauge/*, IAlchemyGoggles* {
 
     public static final ArmorMaterial infinite_armor = EnumHelper.addArmorMaterial("infinity", 9999, new int[]{6, 16, 12, 6}, 1000);
     public IIcon cosmicMask;
@@ -112,8 +119,35 @@ public class ItemArmorInfinity extends ItemArmor implements ICosmicRenderItem, I
             }
         }
         else if(armorType == 2){
+            //magicalgrowthpants
+            pantsGrowthTicker(player);
             if(player.isBurning())
                 player.extinguish();
+        }
+        //waterwalking shoes
+        else if(armorType == 3){
+            int x = MathHelper.floor_double(player.posX);
+            int y = MathHelper.floor_double(player.boundingBox.minY - 0.11f);
+            int yPaddle = MathHelper.floor_double(player.boundingBox.minY);
+            int z = MathHelper.floor_double(player.posZ);
+            Material mWater = world.getBlock(x, y, z).getMaterial();
+            Material mPaddle = world.getBlock(x, yPaddle, z).getMaterial();
+            boolean waterBelow = (mWater == Material.water);
+            boolean paddlingInWater = (mPaddle == Material.water);
+
+            if (waterBelow && player.motionY < 0.0D && !player.isSneaking()) {
+                if (world.isRemote) {
+                    player.posY -= player.yOffset;
+                } else {
+                    player.posY -= player.motionY;
+                }
+                player.motionY = 0.0D;
+                player.fallDistance = 0.0F;
+            }
+
+            if ((player.isInWater() || paddlingInWater) && !player.isSneaking()) {
+                player.motionY = 0.1f;
+            }
         }
     }
 
@@ -171,16 +205,44 @@ public class ItemArmorInfinity extends ItemArmor implements ICosmicRenderItem, I
     }
 
     @Optional.Method(modid = "BloodMagic")
-    boolean canSeeLPBar(ItemStack itemStack) {
-        if (armorType == 0)
+    @Override
+    public boolean canSeeLPBar(ItemStack itemStack) {
+        if (armorType == 0) {
             return true;
-        return false;
+        } else {
+            return false;
+        }
     }
+
+    /*@Optional.Method(modid = "BloodMagic")
+    @Override
+    public boolean showIngameHUD(World world, ItemStack stack, EntityPlayer player) {
+        if (armorType == 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }*/
 
     @Optional.Method(modid = "Thaumcraft")
     @Override
     public int getVisDiscount(ItemStack itemStack, EntityPlayer entityPlayer, Aspect aspect){
         return 20;
+    }
+
+    @Optional.Method(modid = "Thaumcraft")
+    @Override
+    public int getWarp(ItemStack itemstack, EntityPlayer player) {
+        //i'm hoping that this being negative will cause temporary warp to just vanish
+        return -20;
+    }
+
+    // do you really need this much runic charge? lol
+    @Optional.Method(modid = "Thaumcraft")
+    @Override
+    public int getRunicCharge(ItemStack itemstack) {
+        // per armor piece in the set i think
+        return 2;
     }
 
     public ItemStack[] getArmorSetStacks() {
@@ -236,7 +298,7 @@ public class ItemArmorInfinity extends ItemArmor implements ICosmicRenderItem, I
     @Optional.Method(modid = "Botania")
     @Override
     public float getDiscount(ItemStack stack, int slot, EntityPlayer player) {
-        return LudicrousItems.isInfinite(player) ? 0.25F : 0F;
+        return LudicrousItems.isInfinite(player) ? 0.40F : 0F;
     }
 
     @Optional.Method(modid = "Botania")
@@ -328,6 +390,30 @@ public class ItemArmorInfinity extends ItemArmor implements ICosmicRenderItem, I
         return false;
     }
 
+    public void pantsGrowthTicker(EntityPlayer player) {
+        World world = player.worldObj;
+        if (!(player instanceof EntityPlayer) || world.isRemote || armorType != 2) {
+            return;
+        }
+        int range = 10;
+        int verticalRange = 3;
+        int posX = (int) Math.round(player.posX - 0.5f);
+        int posY = (int) player.posY;
+        int posZ = (int) Math.round(player.posZ - 0.5f);
+
+        for (int ix = posX - range; ix <= posX + range; ix++) {
+            for (int iz = posZ - range; iz <= posZ + range; iz++) {
+                for (int iy = posY - verticalRange; iy <= posY + verticalRange; iy++) {
+                    Block block = world.getBlock(ix, iy, iz);
+                    if (block instanceof IPlantable) {
+                        if (world.rand.nextInt(20) == 0) {
+                            block.updateTick(world, ix, iy, iz, world.rand);
+                        }
+                    }
+                }
+            }   
+        }
+    }
 	public static class abilityHandler {
 		public static List<String> playersWithHat = new ArrayList<String>();
 		public static List<String> playersWithChest = new ArrayList<String>();
@@ -368,8 +454,10 @@ public class ItemArmorInfinity extends ItemArmor implements ICosmicRenderItem, I
 				Boolean hasHat = playerHasHat(player);
 				if (playersWithHat.contains(key)) {
 					if (hasHat) {
-						
+						PotionEffect effect = player.getActivePotionEffect(Potion.nightVision);
+                        if (effect == null || effect.getDuration() < 90000) player.addPotionEffect(new PotionEffect(Potion.nightVision.id, 91000, 1, true));
 					} else {
+                        player.removePotionEffect(Potion.nightVision.id);
 						playersWithHat.remove(key);
 					}
 				} else if (hasHat) {
@@ -410,7 +498,7 @@ public class ItemArmorInfinity extends ItemArmor implements ICosmicRenderItem, I
 					if (hasFoot) {
 						boolean flying = player.capabilities.isFlying;
 						boolean swimming = player.isInsideOfMaterial(Material.water) || player.isInWater();
-						if (player.onGround || flying || swimming) {
+						if (player.onGround || flying/* || swimming*/) {
 							boolean sneaking = player.isSneaking();
 							
 							float speed = 0.15f 

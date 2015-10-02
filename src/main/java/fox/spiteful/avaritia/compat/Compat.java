@@ -72,7 +72,8 @@ public class Compat {
             }
             catch(Throwable e)
             {
-                Lumberjack.log(Level.INFO, e, "Avaritia had Too Many Items.");
+                Lumberjack.info("Avaritia had Too Many Items.");
+                Lumberjack.debug(e);
             }
         }
 
@@ -82,7 +83,8 @@ public class Compat {
                 Tweak.registrate();
             }
             catch(Throwable e){
-                Lumberjack.log(Level.INFO, e, "Avaritia is too good for tweaking, apparently.");
+                Lumberjack.info("Avaritia is too good for tweaking, apparently.");
+                Lumberjack.debug(e);
             }
         }
 
@@ -95,8 +97,8 @@ public class Compat {
                 Lucrum.abracadabra();
             }
             catch(Throwable e){
-                Lumberjack.log(Level.INFO, "Avaritia accumulated too much Warp!");
-                e.printStackTrace();
+                Lumberjack.info("Avaritia accumulated too much Warp!");
+                Lumberjack.debug(e);
                 thaumic = false;
             }
         }
@@ -108,8 +110,8 @@ public class Compat {
                 Grinder.catalyst.getInput().add(galg);
             }
             catch(Throwable e){
-                Lumberjack.log(Level.INFO, "Avaritia died of old age while trying to craft the Galgadorian Drill.");
-                e.printStackTrace();
+                Lumberjack.info("Avaritia died of old age while trying to craft the Galgadorian Drill.");
+                Lumberjack.debug(e);
             }
         }
 
@@ -148,8 +150,8 @@ public class Compat {
                         'I', new ItemStack(LudicrousItems.resource, 1, 6));
             }
             catch (Throwable e){
-                Lumberjack.log(Level.INFO, "Avaritia couldn't figure out how channels work.");
-                e.printStackTrace();
+                Lumberjack.info("Avaritia couldn't figure out how channels work.");
+                Lumberjack.debug(e);
                 ae2 = false;
             }
         }
@@ -164,8 +166,8 @@ public class Compat {
                 Grinder.catalyst.getInput().add(unstable);
             }
             catch (Throwable e){
-                Lumberjack.log(Level.INFO, "Avaritia was unable to stop Lavos.");
-                e.printStackTrace();
+                Lumberjack.info("Avaritia was unable to stop Lavos.");
+                Lumberjack.debug(e);
                 exu = false;
             }
         }
@@ -179,8 +181,8 @@ public class Compat {
                         Grinder.catalyst.getInput().add(osmir);
                     }
                     catch(Throwable e){
-                        Lumberjack.log(Level.INFO, "Avaritia got sick of only getting 2 planks per log.");
-                        e.printStackTrace();
+                        Lumberjack.info("Avaritia got sick of only getting 2 planks per log.");
+                        Lumberjack.debug(e);
                         gt = false;
                     }
                 }
@@ -192,8 +194,8 @@ public class Compat {
                 }
             }
             catch (Throwable e){
-                Lumberjack.log(Level.INFO, "Avaritia blew up the macerator.");
-                e.printStackTrace();
+                Lumberjack.info("Avaritia blew up the macerator.");
+                Lumberjack.debug(e);
                 ic2 = false;
             }
         }
@@ -203,8 +205,8 @@ public class Compat {
                 Tsundere.baka();
             }
             catch (Throwable e){
-                Lumberjack.log(Level.INFO, "Avaritia is wondering where all the dayblooms went.");
-                e.printStackTrace();
+                Lumberjack.info("Avaritia is wondering where all the dayblooms went.");
+                Lumberjack.debug(e);
                 botan = false;
             }
         }
@@ -214,8 +216,8 @@ public class Compat {
                 Bloody.bloodlett();
             }
             catch (Throwable e){
-                Lumberjack.log(Level.INFO, "Avaritia decided to use a Fallen Kanade instead.");
-                e.printStackTrace();
+                Lumberjack.info("Avaritia decided to use a Fallen Kanade instead.");
+                Lumberjack.debug(e);
                 blood = false;
             }
         }
@@ -227,7 +229,8 @@ public class Compat {
                 Grinder.catalyst.getInput().add(lol);
             }
             catch (Throwable e){
-                Lumberjack.log(Level.INFO, e, "Avaritia was distracted by a giant glowing sphere.");
+                Lumberjack.info("Avaritia was distracted by a giant glowing sphere.");
+                Lumberjack.debug(e);
             }
         }
 
@@ -238,8 +241,8 @@ public class Compat {
                 Grinder.catalyst.getInput().add(ludicrite);
             }
             catch (Throwable e){
-                Lumberjack.log(Level.INFO, "Avaritia decided it just didn't need all that RF.");
-                e.printStackTrace();
+                Lumberjack.info("Avaritia decided it just didn't need all that RF.");
+                Lumberjack.debug(e);
                 bigReactors = false;
             }
         }
@@ -252,8 +255,8 @@ public class Compat {
                 Tonkers.buildstruct();
             }
             catch (Throwable e){
-                Lumberjack.log(Level.INFO, "Avaritia fell in the smeltery.");
-                e.printStackTrace();
+                Lumberjack.info("Avaritia fell in the smeltery.");
+                Lumberjack.debug(e);
                 ticon = false;
             }
         }
@@ -265,8 +268,8 @@ public class Compat {
                 Grinder.catalyst.getInput().add(red);
             }
             catch (Throwable e){
-                Lumberjack.log(Level.INFO, "Avaritia got tired of abusing the blaze rod exploit.");
-                e.printStackTrace();
+                Lumberjack.info("Avaritia got tired of abusing the blaze rod exploit.");
+                Lumberjack.debug(e);
                 pe = false;
             }
         }
@@ -278,8 +281,8 @@ public class Compat {
                 Grinder.catalyst.getInput().add(pank);
             }
             catch (Throwable e){
-                Lumberjack.log(Level.INFO, "Avaritia walked into the laser drill.");
-                e.printStackTrace();
+                Lumberjack.info("Avaritia walked into the laser drill.");
+                Lumberjack.debug(e);
                 mfr = false;
             }
         }
@@ -290,7 +293,8 @@ public class Compat {
                 Grinder.catalyst.getInput().add(new ItemStack(ironwood, 1));
             }
             catch (Throwable e){
-                Lumberjack.log(Level.INFO, e, "Avaritia was killed by a hydra.");
+                Lumberjack.info("Avaritia was killed by a hydra.");
+                Lumberjack.debug(e);
             }
         }
 
@@ -301,7 +305,8 @@ public class Compat {
                 Grinder.catalyst.getInput().add(massZivicioBlock);
             }
             catch (Throwable e){
-                Lumberjack.log(Level.INFO, e, "Avaritia expects magical crops 4 to come out of beta at the end of time.");
+                Lumberjack.info("Avaritia expects magical crops 4 to come out of beta at the end of time.");
+                Lumberjack.debug(e);
             }
         } else if(Loader.isModLoaded("magicalcrops") && !modVersion("magicalcrops").contains("4.0.0") && Config.magicrops){
             try {
@@ -323,7 +328,8 @@ public class Compat {
                 OreDictionary.registerOre("rawCalamari", new ItemStack(meat, 1, 1));
             }
             catch (Throwable e){
-                Lumberjack.log(Level.INFO, e, "Avaritia got bored of waiting for magical crops to grow.");
+                Lumberjack.info("Avaritia got bored of waiting for magical crops to grow.");
+                Lumberjack.debug(e);
             }
         }
 
@@ -333,7 +339,8 @@ public class Compat {
                 OreDictionary.registerOre("rawMutton", new ItemStack(mutton, 1, 0));
             }
             catch (Throwable e){
-                Lumberjack.log(Level.INFO, e, "Avaritia forgot which Gany's mod it was dealing with.");
+                Lumberjack.info("Avaritia forgot which Gany's mod it was dealing with.");
+                Lumberjack.debug(e);
             }
         }
 
@@ -347,8 +354,8 @@ public class Compat {
                 OreDictionary.registerOre("cropBeetroot", new ItemStack(beet, 1, 0));
             }
             catch (Throwable e){
-                Lumberjack.log(Level.INFO, "Avaritia got overwhelmed by all the food choices. D:");
-                e.printStackTrace();
+                Lumberjack.info("Avaritia got overwhelmed by all the food choices. D:");
+                Lumberjack.debug(e);
             }
         }
 
@@ -358,7 +365,8 @@ public class Compat {
                 OreDictionary.registerOre("cropBarley", new ItemStack(barley, 1, 0));
             }
             catch (Throwable e){
-                Lumberjack.log(Level.INFO, e, "Avaritia got overwhelmed by all the food choices. D:");
+                Lumberjack.info("Avaritia got overwhelmed by all the food choices. D:");
+                Lumberjack.debug(e);
             }
         }
 
@@ -371,7 +379,8 @@ public class Compat {
                 Grinder.catalyst.getInput().add(new ItemStack(gem, 1, 6));
             }
             catch (Throwable e){
-                Lumberjack.log(Level.INFO, e, "Avaritia got sick of the arcane guardian's healspam.");
+                Lumberjack.info("Avaritia got sick of the arcane guardian's healspam.");
+                Lumberjack.debug(e);
                 am2 = false;
             }
         }
@@ -381,7 +390,8 @@ public class Compat {
                 Ranger.stopForestFires();
             }
             catch (Throwable e){
-                Lumberjack.log(Level.INFO, e, "Avaritia got stung by a bee.");
+                Lumberjack.info("Avaritia got stung by a bee.");
+                Lumberjack.debug(e);
                 forestry = false;
             }
         }
@@ -392,7 +402,8 @@ public class Compat {
                 Grinder.catalyst.getInput().add(new ItemStack(fuel, 1, 2));
             }
             catch (Throwable e){
-                Lumberjack.log(Level.INFO, e, "Avaritia tried to do human transmutation.");
+                Lumberjack.info("Avaritia tried to do human transmutation.");
+                Lumberjack.debug(e);
             }
         }
 
@@ -415,7 +426,8 @@ public class Compat {
                         'R', new ItemStack(LudicrousItems.singularity, 1, 3));
             }
             catch (Throwable e){
-                Lumberjack.log(Level.INFO, e, "Avaritia forgot one of Thermal Expansion's 500 prerequisites.");
+                Lumberjack.info("Avaritia forgot one of Thermal Expansion's 500 prerequisites.");
+                Lumberjack.debug(e);
                 te = false;
             }
         }
@@ -426,7 +438,8 @@ public class Compat {
                 Grinder.catalyst.getInput().add(new ItemStack(ingredient, 1, 150));
             }
             catch (Throwable e){
-                Lumberjack.log(Level.INFO, e, "Avaritia suffered from Curse of the Incompatibility.");
+                Lumberjack.info("Avaritia suffered from Curse of the Incompatibility.");
+                Lumberjack.debug(e);
             }
         }
 
@@ -435,7 +448,8 @@ public class Compat {
                 Torcherino.lightItUp();
             }
             catch (Throwable e){
-                Lumberjack.log(Level.INFO, e, "In soviet Avaritia mod thinks you are too slow.");
+                Lumberjack.info("In soviet Avaritia mod thinks you are too slow.");
+                Lumberjack.debug(e);
             }
         }
 
@@ -445,7 +459,8 @@ public class Compat {
                 Grinder.catalyst.getInput().add(new ItemStack(stuff, 1, 3));
             }
             catch (Throwable e){
-                Lumberjack.log(Level.INFO, e, "Avaritia couldn't figure out how torque works.");
+                Lumberjack.info("Avaritia couldn't figure out how torque works.");
+                Lumberjack.debug(e);
             }
         }
         
@@ -455,8 +470,8 @@ public class Compat {
                 InfiniteFoxes.floof();
             }
             catch(Throwable e){
-                Lumberjack.log(Level.INFO, "Avaritia was not fluffy enough!");
-                e.printStackTrace();
+                Lumberjack.info("Avaritia was not fluffy enough!");
+                Lumberjack.debug(e);
             }
         }
     }

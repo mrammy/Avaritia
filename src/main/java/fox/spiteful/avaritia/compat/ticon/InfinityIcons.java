@@ -33,7 +33,7 @@ public class InfinityIcons extends TConTextureResourcePackBase {
 	        	InputStream stream = Minecraft.getMinecraft().getResourceManager().getResource(res).getInputStream();
 	            infinityImage = ImageIO.read(stream);
 	        } catch (Exception err) {
-	            Lumberjack.log(Level.WARN, "Unable to load overlay image for Infinity tool parts");
+	            Lumberjack.warn("Unable to load overlay image for Infinity tool parts");
 	        }
 		}
 	}
@@ -43,7 +43,7 @@ public class InfinityIcons extends TConTextureResourcePackBase {
 		try {
 			stream = Minecraft.getMinecraft().getResourceManager().getResource(res).getInputStream();
 		} catch (Exception err) {
-            Lumberjack.log(Level.WARN, "Unable to load animation data for Infinity tool parts");
+            Lumberjack.warn("Unable to load animation data for Infinity tool parts");
         }
 		return stream;
 	}

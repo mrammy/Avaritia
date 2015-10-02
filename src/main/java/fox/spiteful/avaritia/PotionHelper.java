@@ -2,7 +2,6 @@ package fox.spiteful.avaritia;
 
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import net.minecraft.potion.Potion;
-import org.apache.logging.log4j.Level;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -22,8 +21,8 @@ public class PotionHelper {
             }
         }
         catch(Exception e){
-            Lumberjack.log(Level.ERROR, e, "Failure to get potions");
-            e.printStackTrace();
+            Lumberjack.error("Failure to get potions");
+            Lumberjack.debug(e);
         }
     }
 

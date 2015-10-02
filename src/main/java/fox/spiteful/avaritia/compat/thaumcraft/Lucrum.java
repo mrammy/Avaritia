@@ -83,7 +83,8 @@ public class Lucrum {
                     Grinder.catalyst.getInput().add(new ItemStack(kamiResource, 1, 2));
                 }
             } catch (Exception e) {
-                Lumberjack.log(Level.INFO, e, "Avaritia couldn't find the last research it needs to unlock Ichor.");
+                Lumberjack.info("Avaritia couldn't find the last research it needs to unlock Ichor.");
+                Lumberjack.debug(e);
             }
         }
 
