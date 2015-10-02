@@ -1,7 +1,6 @@
 package fox.spiteful.avaritia.compat.nei;
 
 import codechicken.nei.api.API;
-import fox.spiteful.avaritia.gui.GUICompressor;
 import fox.spiteful.avaritia.helpers.SideHelper;
 import net.minecraft.item.ItemStack;
 
